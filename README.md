@@ -1,4 +1,4 @@
 # rps-linear-game
-Rock paper scissors grid for our linear algebra class
+Rock paper scissors cellular automata for our linear algebra class
 
 lol.

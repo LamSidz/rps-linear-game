@@ -9,6 +9,47 @@ class Cell{
 		return this.state
 	}
 }
+function countNeighbor(x,y){
+	let sum = 0;
+	for (let i = -1;i<2;i++){
+		for(let j=-1;j<2;j++){
+			let col = (x+i+cols)%cols;
+			let row = (y+j+rows)%rows;
+
+			sum += ruleSet[grid[col][row].getState()][grid[x][y].getState()];
+		}
+	}
+	return sum;
+}
+function nextCellState(x,y){
+    for(let l = 0;l<3;l++){
+		if(ruleSet[l][grid[x][y].getState()]>0){
+			return l;
+		}
+	}
+}
+function mostNeighbors(x,y){
+    let psum = 0;
+    let ysum = 0;
+    let bsum = 0;
+    let output;
+    for (let i = -1;i<2;i++){
+		for(let j=-1;j<2;j++){
+			let col = (x+i+cols)%cols;
+			let row = (y+j+rows)%rows;
+
+            if(grid[col][row].getState() == 0){
+                psum += ruleSet[grid[col][row].getState()][grid[x][y].getState()];
+            } else if(grid[col][row].getState() == 1) {
+                ysum += ruleSet[grid[col][row].getState()][grid[x][y].getState()];
+            } else if(grid[col][row].getState() == 2){
+                bsum += ruleSet[grid[col][row].getState()][grid[x][y].getState()];
+            }
+		}
+	}
+    psum > ysum ? bsum > psum ? output = 2 : output = 0 : ysum > bsum ? output = 1 : output = 2;
+    return output;
+}
 function getAnalytics(grid){
 	let rockDensity = 0, paperDensity=0, scissorsDensity=0;
 	let gridSize = grid[0].length*grid.length;
@@ -23,136 +64,121 @@ function getAnalytics(grid){
 	scissorsDensity/=gridSize;
 	return [rockDensity, paperDensity, scissorsDensity];
 }
-function countNeighbor(x,y){
-	let sum = 0;
-	for (let i = -1;i<2;i++){
-		for(let j=-1;j<2;j++){
-			let col = (x+i+cols)%cols;
-			let row = (y+j+rows)%rows;
-
-			sum+= ruleSet[grid[col][row].getState()][grid[x][y].getState()];
-		}
-	}
-	return sum;
-}
-function nextCellState(x,y){
-	for(let l = 0;l<3;l++){
-		if(ruleSet[l][next[x][y].getState()]==1){
-			return l;
-		}
-	}
-}
-function drawEllipses(arr,color){
-  noStroke();
-	//fill(color);
-    // draw ellipses
-  for(let i =0; i < arr.length; i++){
-    let x = i * ((width + 500)/ (400));
-    let y = floor(arr[i]*100);
-    ellipse(x, y, 7);
-  }
-}
-function render(grid,cols,rows){
+function render(grid,cols,rows,applyRule){
 	background(0);
 	for(let i=0;i<cols; i++){
 		for(let j = 0; j<rows;j++){
 			let x = i*resolution, y=j*resolution;
-			let cell = grid[i][j]
+			let cell = new Cell(grid[i][j].getState());
 
 			if (cell.getState()==0){
-				fill("#FF00FF");
+				fill(255,0,255);
 				stroke(0);
 				//rect(x,y,resolution-1,resolution-1);
 				rect(x,y,resolution-1,resolution-1);
 			}
 			else if(cell.getState()==1){
-				fill("#00FFFF");
+				fill(255,255,0);
 				stroke(0);
 				//rect(x,y,resolution-1,resolution-1);
 				rect(x,y,resolution-1,resolution-1);
 			}
 			else if(cell.getState()==2){
-				fill("#ffff00");
+				fill(0,255,255);
 				stroke(0);
 				//rect(x,y,resolution-1,resolution-1);
 				rect(x,y,resolution-1,resolution-1);
 			}
-      else if(cell.getState()==3){
-          fill(0,0,0);
-          stroke(0);
-          rect(x,y,resolution-1,resolution-1);
-      }
+            else if(cell.getState()==3){
+                fill(0,0,0);
+                stroke(0);
+                rect(x,y,resolution-1,resolution-1);
+            }
 
 		}
 	}
-	for(let i = 0;i<cols;i++){
-		for(let j=0;j<rows;j++){
-			if(countNeighbor(i,j)>=3){
-				next[i][j] = grid[i][j];
-				let nextCell = nextCellState(i,j);
+    if(applyRule){
+		  for(let i = 0;i<cols;i++){
+			  for(let j=0;j<rows;j++){
+	              if(countNeighbor(i,j)>=3){
+	                  next[i][j].setState(grid[i][j].getState());
+	                  let nextCell = mostNeighbors(i,j);
+					  next[i][j].setState(nextCell);
+				  }
+			  }
+		  }
 
-				next[i][j].setState(nextCell);
-			}
+	    for(let i = 0; i<cols; i++){
+	        for(let j=0;j<rows;j++){
+	            grid[i][j].setState(next[i][j].getState());
+	        }
+	    }
+    }
+		let density = getAnalytics(grid);
+
+		let rockDensityValues = new Array(),paperDensityValues = new Array(), scissorsDensityValues = new Array();
+		rockDensityValues.push(density[0]);
+		paperDensityValues.push(density[1]);
+		scissorsDensityValues.push(density[2]);
+		if(rockDensityValues.length > 100){
+			rockdDensityValues.shift();
+			paperDensityValues.shift();
+			scissorsDensityValues.shift();
 		}
-	}
-	let density = getAnalytics(grid);
-	let rockDensityValues = new Array(),paperDensityValues = new Array(), scissorsDensityValues = new Array();
-	rockDensityValues.push(density[0]);
-	paperDensityValues.push(density[1]);
-	scissorsDensityValues.push(density[2]);
-	if(rockDensityValues.length > 100){
-		rockdDensityValues.shift();
-		paperDensityValues.shift();
-		scissorsDensityValues.shift();
-	}
-
-	drawEllipses(rockDensityValues, '#ff00ff');
-	//console.log(rockDensityValues[rockDensityValues.length-1]+"\n"+paperDensityValues[paperDensityValues.length-1]+"\n"+scissorsDensityValues[scissorsDensityValues.length-1]);
-	grid = next;
-	next = temp;
+		displayAnalytics('%pink: '+density[0]+'\n%yellow: '+density[1]+'\n%blue: '+density[2]);
+}
+function displayAnalytics(stuff){
+	textSize(32);
+	text(stuff, 300, 550);
 
 }
-
-
 let grid;
 let cols;
 let rows;
 let resolution = 10;
-let ruleSet = [[0,0,1,1],[1,0,0,1],[0,1,0,1],[0,0,0,0]];
+let ruleSet = [[0,0,1,9],[1,0,0,9],[0,1,0,9],[0,0,0,0]];
 let next;
-let temp;
-var wait=true;
+var numClicks = 0;
+var start = false;
+let turns = 5; //change this for testing
 
 
 function setup() {
-	console.log(ruleSet[1][0]);
-	createCanvas(1000, 800);
-	cols = (width/2)/resolution, rows = (height/2)/resolution;
-	let startState = new Array(cols).fill(0).map(x=> Array.from({length: rows}, () => floor(random(4))));
+	createCanvas(800, 1000);
+	cols = width/resolution, rows = (height/2)/resolution;
+	let startState = new Array(cols).fill(0).map(x=> Array.from({length: rows}, () => (3)));
 	grid = new Array(cols).fill(0).map(x=>new Array(rows));
-	temp = new Array(cols).fill(0).map(x=>new Array(rows));
-	next = temp;
+	next = new Array(cols).fill(0).map(x=>new Array(rows));
 	for(let i=0;i<cols;i++){
 		for(let j=0;j<rows;j++){
 			grid[i][j] = new Cell(startState[i][j]);
+            next[i][j] = new Cell(startState[i][j])
 		}
 	}
-   //  for(let i=0;i<12;i++){
-   //    wait = true
-   //    while(wait){
-   //      canvas.click(function(e){
-   //          let x=e.clientX, y=e.clientY;
-   //          let r=floor(x/10), c=floor(y/10);
-   //          grid[r][c] = (i%3);
-   //          draw();
-   //        wait = false;
-   //      })
-   //    }
-   // }
+    render(grid,cols,rows,false)
 }
 
-function draw() {
+function colorGridOnClick(e){
+    let x = e.clientX, y = e.clientY;
+    let r = floor(x/10), c = floor(y/10);
+    grid[r][c] = new Cell(numClicks%3);
+    numClicks ++;
+    render(grid,cols,rows,false);
+}
+window.addEventListener('click', colorGridOnClick);
 
-	render(grid,cols,rows);
+function allowDraw(e){
+  numClicks > 3*turns-1 ? start = true : start = false;
+}
+window.addEventListener('click', allowDraw);
+
+window.addEventListener('keydown', (e) => {
+  if (e.code === "KeyE") start=!start;});
+
+function draw() {
+    if(start){
+	    render(grid,cols,rows,true);
+    }
+
 
 }

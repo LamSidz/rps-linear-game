@@ -121,11 +121,11 @@ function render(grid,cols,rows,applyRule){
 		paperDensityValues.push(density[1]);
 		scissorsDensityValues.push(density[2]);
 		if(rockDensityValues.length > 100){
-			rockdDensityValues.shift();
+			rockDensityValues.shift();
 			paperDensityValues.shift();
 			scissorsDensityValues.shift();
 		}
-		displayAnalytics('%pink: '+density[0]+'\n%yellow: '+density[1]+'\n%blue: '+density[2]);
+		displayAnalytics('%pink: '+(100*density[0])+'\n%yellow: '+(100*density[1])+'\n%blue: '+(100*density[2]));
 }
 function displayAnalytics(stuff){
 	textSize(32);

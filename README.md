@@ -7,7 +7,7 @@ When a tile is surrounded by 3 or more of its enemy tile (for example 3 yellows 
 After a set amount of time, if a winner is not evident, players should pause (perhaps randomly to make it fair), and see which color takes up the most space.
 Players can press e to pause or play at any time, even when not all turns have been taken.
 
-Note: the colors of the analytics do not reflect the winner; to determine the winner you should read the numbers. We kept it this way because it looks cool. 
+Note: the colors of the analytics match the bottom right cell, they do not reflect the winner; to determine the winner you should read the numbers. We kept it this way because it looks cool. 
 
 ## play the game
 [play the game here](https://lamsidz.github.io/rps-linear-game/Linear_game_final_build)

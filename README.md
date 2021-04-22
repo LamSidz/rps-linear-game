@@ -19,7 +19,7 @@ The ruleset for our game is represented internally by a square matrix. This matr
 
 Additionally, the boardstate is a very large matrix whose entries are cell objects. These cell objects have information about the state of the cell, and we use this information to iterate the board state, and to display it on the screen. 
 
-There are also connections with [target and spiral waves in Belousov-Zhabotinsky reaction](https://www.youtube.com/watch?v=PnOy1fSxBdI), which are modeled by linear differential equations. These linear differential equations are solved using linear algebra techniques. The spirals produced by our game are very similar to some of the spirals produced by that chemical reaction.
+There are also connections with [target and spiral waves in the Belousov-Zhabotinsky reaction](https://www.youtube.com/watch?v=PnOy1fSxBdI), which are modeled by linear differential equations. These linear differential equations are solved using linear algebra techniques. The spirals produced by our game are very similar to some of the spirals produced by that chemical reaction.
 
 ## creators
 This game was created by Michio Morizono (MIMOR02) and Sam Lidz (LamSidz)

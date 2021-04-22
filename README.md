@@ -8,4 +8,4 @@ After a set amount of time, if a winner is not evident, players should pause (pe
 Players can press e to pause or play at any time, even when not all turns have been taken.
 
 ## play the game
-https://lamsidz.github.io/rps-linear-game/Linear_game_final_build
+[play the game here](https://lamsidz.github.io/rps-linear-game/Linear_game_final_build)

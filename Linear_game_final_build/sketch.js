@@ -161,9 +161,11 @@ function setup() {
 function colorGridOnClick(e){
     let x = e.clientX, y = e.clientY;
     let r = floor(x/10), c = floor(y/10);
-    grid[r][c] = new Cell(numClicks%3);
-    numClicks ++;
-    render(grid,cols,rows,false);
+    if(grid[r][c].getState() == 3){
+	grid[r][c].setState(numClicks%3);
+    	numClicks ++;
+    	render(grid,cols,rows,false);    
+    }
 }
 window.addEventListener('click', colorGridOnClick);
 

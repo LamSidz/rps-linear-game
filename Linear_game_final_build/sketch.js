@@ -90,7 +90,7 @@ function render(grid,cols,rows,applyRule){
 				rect(x,y,resolution-1,resolution-1);
 			}
             else if(cell.getState()==3){
-                fill(58,55,60);
+                fill(59,56,67);
                 stroke(0);
                 rect(x,y,resolution-1,resolution-1);
             }
